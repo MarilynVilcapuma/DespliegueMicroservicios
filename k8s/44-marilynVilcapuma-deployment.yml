@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: marilynvilcapuma-api-deployment
+  namespace: marilynvilcapuma-api-ns
+  labels:
+    app: marilynvilcapuma-api
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: marilynvilcapuma-api
+  template:
+    metadata:
+      labels:
+        app: marilynvilcapuma-api
+    spec:
+      containers:
+        - name: marilynvilcapuma-api
+          image: marilynvilcapuma/marilynvilcapuma-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8085
+          env:
+            - name: APP_ENV
+              valueFrom:
+                configMapKeyRef:
+                  key: APP_ENV
+                  name: marilynvilcapuma-api-config
+            - name: APP_VERSION
+              valueFrom:
+                configMapKeyRef:
+                  key: APP_VERSION
+                  name: marilynvilcapuma-api-config
+            - name: APP_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: APP_PORT
+                  name: marilynvilcapuma-api-config
+            - name: SECRET_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: marilynvilcapuma-api-secret
+            - name: SECRET_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: marilynvilcapuma-api-secret
